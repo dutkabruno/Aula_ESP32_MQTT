@@ -1,13 +1,14 @@
 #include <WiFi.h>
 
-const String SSID = "nome da rede";
-const String PSW = "senha da rede";
+const String SSID = "iPhone";
+const String PSW = "iot_sul_123";
 
 void scanLocalNetworks();
 
 void setup() {
   Serial.begin(115200);
   scanLocalNetworks();
+  Serial.println("Iniciando conexão com rede WiFi");
   WiFi.begin(SSID, PSW);
   while(WiFi.status() != WL_CONNECTED){
     Serial.print(".");
