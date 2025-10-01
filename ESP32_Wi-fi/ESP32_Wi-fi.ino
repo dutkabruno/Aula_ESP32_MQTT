@@ -14,6 +14,7 @@ void setup() {
 
 void loop() {
   if(WiFi.status() != WL_CONNECTED){
+    Serial.println("Conexão perdida!!! :( ");
     conexaoWifi();
   }
 }
