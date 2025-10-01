@@ -1,11 +1,23 @@
 #include <WiFi.h>
 
+const String SSID = "nome da rede";
+const String PSW = "senha da rede";
+
 void scanLocalNetworks();
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Iniciando Scan de redes Wi-Fi");
   scanLocalNetworks();
+  WiFi.begin(SSID, PSW);
+  while(WiFi.status() != WL_CONNECTED){
+    Serial.print(".");
+    delay(400);
+    Serial.print(".");
+    delay(400);
+    Serial.println(".");
+    delay(400);
+  }
+  Serial.println("Rede de Wi-Fi conectada");
 }
 
 void loop() {
@@ -14,6 +26,7 @@ void loop() {
 
 
 void scanLocalNetworks(){
+  Serial.println("Iniciando Scan de redes Wi-Fi");
   int number = WiFi.scanNetworks();
     if(number == -1){
       Serial.println("ERRO!. Não deu bom");
