@@ -1,28 +1,21 @@
 #include <WiFi.h>
 
-const String SSID = "iPhone";
-const String PSW = "iot_sul_123";
+const String SSID = "Paulo";
+const String PSW = "cxos9674";
 
 void scanLocalNetworks();
 
+void conexaoWifi();
+
 void setup() {
   Serial.begin(115200);
-  scanLocalNetworks();
-  Serial.println("Iniciando conexão com rede WiFi");
-  WiFi.begin(SSID, PSW);
-  while(WiFi.status() != WL_CONNECTED){
-    Serial.print(".");
-    delay(400);
-    Serial.print(".");
-    delay(400);
-    Serial.println(".");
-    delay(400);
-  }
-  Serial.println("Rede de Wi-Fi conectada");
+  conexaoWifi();
 }
 
 void loop() {
-  
+  if(WiFi.status() != WL_CONNECTED){
+    conexaoWifi();
+  }
 }
 
 
@@ -38,4 +31,19 @@ void scanLocalNetworks(){
       }
       //Serial.printf("O número de redes encontradas é de: %d\n", number);
     }
+}
+
+void conexaoWifi(){
+  scanLocalNetworks();
+  Serial.println("Iniciando conexão com rede WiFi");
+  WiFi.begin(SSID, PSW);
+  while(WiFi.status() != WL_CONNECTED){
+    Serial.print(".");
+    delay(400);
+    Serial.print(".");
+    delay(400);
+    Serial.println(".");
+    delay(400);
+  }
+  Serial.println("Rede de Wi-Fi conectada");
 }
