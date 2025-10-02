@@ -1,6 +1,10 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 
+//Nome: Bruno Davi Dutka
+//Turma: TDESI-V1
+//Grupo: Bruno, Paulo e Vinicius Angelo
+
 const String SSID = "iPhone";
 const String PSW = "iot_sul_123";
 
