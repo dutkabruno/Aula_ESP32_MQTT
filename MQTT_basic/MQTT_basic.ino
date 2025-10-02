@@ -7,6 +7,8 @@ const String PSW = "iot_sul_123";
 const String brokerURL = "test.mosquitto.org"; //URL do broker    (servidor)
 const int porta = 1883;                        //Porta do broker  (servidor)
 
+const String topic = "AulaIoTSul/Chat";
+
 WiFiClient espClient;                 //Criando Cliente WiFi
 PubSubClient mqttClient(espClient);   //Criando Cliente MQTT
 
@@ -25,6 +27,11 @@ void loop() {
   mqttClient.loop();
   reconexaoWifi();
   reconexaoBroker();
+  if(Serial.available() > 0){
+  String text = Serial.readStringUntil('\n');
+  text = "bruno: " + text;
+  mqttClient.publish(topic.c_str(), text.c_str());
+  }
 }
 
 void conexaoWifi(){
@@ -36,7 +43,7 @@ void conexaoWifi(){
     Serial.print(".");
     delay(400);
     Serial.println(".");
-    delay(400);
+    delay(5000);
   }
   Serial.println("Rede de Wi-Fi conectada");
 }
