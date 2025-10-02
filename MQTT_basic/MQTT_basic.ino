@@ -7,7 +7,10 @@ const String PSW = "iot_sul_123";
 const String brokerURL = "test.mosquitto.org"; //URL do broker    (servidor)
 const int porta = 1883;                        //Porta do broker  (servidor)
 
-const String topic = "AulaIoTSul/Chat";
+const String topic_1 = "Carrinho/Cheio/1";
+const String topic_2 = "Carrinho/Cheio/2";
+
+const int led = 10;
 
 WiFiClient espClient;                 //Criando Cliente WiFi
 PubSubClient mqttClient(espClient);   //Criando Cliente MQTT
@@ -22,6 +25,7 @@ void setup() {
   Serial.begin(115200);
   conexaoWifi();
   conexaoBroker();
+  pinMode(led, OUTPUT);
 }
 
 void loop() {
@@ -68,17 +72,24 @@ void conexaoBroker(){
     Serial.println(".");
     delay(2000);
   }
-  mqttClient.subscribe(topic.c_str());
+  mqttClient.subscribe(topic_1.c_str());
   mqttClient.setCallback(callback);
   Serial.println("Conectado com sucesso!");
 }
 
-void callback(char* topic, byte* payload, unsigned long length){
+void callback(char* topic_1, byte* payload, unsigned long length){
   String resposta = "";
   for(int i = 0;  i < length; i++){
     resposta += (char) payload[i];
   }
-  Serial.println(resposta);
+  if(resposta == "ON"){
+    analogWrite(led, 255);
+    Serial.println("Led ligado!!!")
+  }
+  else if(resposta == "OFF"){
+    analogWrite(led, 0);
+    Serial.println("Led desligado!!!")
+  }
 }
 
 void reconexaoBroker(){
@@ -90,6 +101,5 @@ void reconexaoBroker(){
 
 void mandarMensagem(){
   String text = Serial.readStringUntil('\n');
-  text = "bruno: " + text;
-  mqttClient.publish(topic.c_str(), text.c_str());
+  mqttClient.publish(topic_2.c_str(), text.c_str());
 }
