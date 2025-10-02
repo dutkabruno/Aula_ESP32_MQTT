@@ -16,6 +16,7 @@ void conexaoWifi();
 void conexaoBroker();
 void reconexaoWifi();
 void reconexaoBroker();
+void mandarMensagem();
 
 void setup() {
   Serial.begin(115200);
@@ -28,9 +29,7 @@ void loop() {
   reconexaoWifi();
   reconexaoBroker();
   if(Serial.available() > 0){
-  String text = Serial.readStringUntil('\n');
-  text = "bruno: " + text;
-  mqttClient.publish(topic.c_str(), text.c_str());
+  mandarMensagem();
   }
 }
 
@@ -67,9 +66,19 @@ void conexaoBroker(){
     Serial.print(".");
     delay(400);
     Serial.println(".");
-    delay(400);
+    delay(2000);
   }
+  mqttClient.subscribe(topic.c_str());
+  mqttClient.setCallback(callback);
   Serial.println("Conectado com sucesso!");
+}
+
+void callback(char* topic, byte* payload, unsigned long length){
+  String resposta = "";
+  for(int i = 0;  i < length; i++){
+    resposta += (char) payload[i];
+  }
+  Serial.println(resposta);
 }
 
 void reconexaoBroker(){
@@ -77,4 +86,10 @@ void reconexaoBroker(){
       Serial.println("Conexão com o broker perdida!!!");
       conexaoBroker();
     }
+}
+
+void mandarMensagem(){
+  String text = Serial.readStringUntil('\n');
+  text = "bruno: " + text;
+  mqttClient.publish(topic.c_str(), text.c_str());
 }
