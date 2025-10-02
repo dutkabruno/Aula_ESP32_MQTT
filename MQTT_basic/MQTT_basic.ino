@@ -12,29 +12,25 @@ PubSubClient mqttClient(espClient);   //Criando Cliente MQTT
 
 void conexaoWifi();
 void conexaoBroker();
+void reconexaoWifi();
+void reconexaoBroker();
 
 void setup() {
   Serial.begin(115200);
   conexaoWifi();
-  conexaoBrober();
+  conexaoBroker();
 }
 
 void loop() {
-  if(WiFi.status() != WL_CONNECTED){
-    Serial.println("Conexão de rede perdida!!!");
-    conexaoWifi();
-  }
   mqttClient.loop();
-  if(!mqttClient.connected()){
-    Serial.println("Conexão com o broker perdida!!!");
-    conexaoBroker();
-  }
+  reconexaoWifi();
+  reconexaoBroker();
 }
 
 void conexaoWifi(){
   Serial.println("Iniciando conexão com rede WiFi");
-  WiFi.begin(SSID, PSW);
   while(WiFi.status() != WL_CONNECTED){
+    WiFi.begin(SSID, PSW);
     Serial.print(".");
     delay(400);
     Serial.print(".");
@@ -45,15 +41,33 @@ void conexaoWifi(){
   Serial.println("Rede de Wi-Fi conectada");
 }
 
+void reconexaoWifi(){
+  if(WiFi.status() != WL_CONNECTED){
+    Serial.println("Conexão de rede perdida!!!");
+    conexaoWifi();
+  }
+}
+
 void conexaoBroker(){
   Serial.println("Conectando ao broker...");
   mqttClient.setServer(brokerURL.c_str(), porta);
   String userId = "ESP_BRUNO";
   userId += String(random(0xffff), HEX);
-  mqttClient.connect(userId.c_str());
   while(!mqttClient.connected()){
-    Serial.println("Erro de conexão");
-    delay(500);
+    mqttClient.connect(userId.c_str());
+    Serial.print(".");
+    delay(400);
+    Serial.print(".");
+    delay(400);
+    Serial.println(".");
+    delay(400);
   }
   Serial.println("Conectado com sucesso!");
+}
+
+void reconexaoBroker(){
+  if(!mqttClient.connected()){
+      Serial.println("Conexão com o broker perdida!!!");
+      conexaoBroker();
+    }
 }
